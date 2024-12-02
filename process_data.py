@@ -33,7 +33,8 @@ merged_df = pd.merge(pre_2015_16_df, post_2015_16_df, on=["YEAR", "WEEK"], how="
 merged_df.to_csv('dataset/merged_fludata.csv', index=False)
 
 # Impute missing values
-most_frequent_columns = ['AGE 25-49', 'AGE 50-64']
+merged_df = merged_df.replace('X', np.nan)
+most_frequent_columns = ['AGE 25-49', 'AGE 50-64', 'AGE 25-64', '% WEIGHTED ILI']
 zero_columns = ['total_specimens_combined', 'PERCENT POSITIVE_x', 'A (2009 H1N1)_x', 'A (H1)', 'A (H3)_x', 'A (Subtyping not Performed)_x', 'A (Unable to Subtype)', 'B_x', 'H3N2v_x', 'A (H5)_x' ,'total_specimens_clinical_labs', 'TOTAL A', 'TOTAL B', 'PERCENT POSITIVE_y' ,'PERCENT A', 'PERCENT B','total_specimens_public_health', 'A (2009 H1N1)_y', 'A (H3)_y', 'A (Subtyping not Performed)_y', 'B_y' ,'BVic', 'BYam', 'H3N2v_y', 'A (H5)_y']
 
 imputer_most_frequent = SimpleImputer(strategy='most_frequent')
@@ -43,10 +44,19 @@ merged_df[most_frequent_columns] = imputer_most_frequent.fit_transform(merged_df
 merged_df[zero_columns] = imputer_zero.fit_transform(merged_df[zero_columns])
 
 # Check if all missing values are filled
-print(merged_df.isnull().sum())
+#print(merged_df.isnull().sum())
+#print(merged_df.isna().sum())
+
+# Convert the year and week columns to datetime and set it as the index
+merged_df['date'] = pd.to_datetime(merged_df[['YEAR', 'WEEK']].astype(str).agg('-'.join, axis=1) + '-1', format='%Y-%U-%w')
+merged_df = merged_df.set_index('date')
+merged_df = merged_df.drop(columns=['YEAR', 'WEEK'])
+
+merged_df.rename(columns={"% WEIGHTED ILI": "OT"}, inplace=True)
 
 # Save the DataFrame to a new CSV file
-merged_df.to_csv('dataset/processed_fludata.csv', index=False)
+merged_df.to_csv('dataset/flu.csv', index=True)
+
 
 
 
