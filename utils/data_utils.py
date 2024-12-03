@@ -112,6 +112,21 @@ class TSFDataLoader:
       train_end = int(n * 0.7)
       val_end = n - int(n * 0.2)
       test_end = n
+    """ elif self.data.startswith('flu'):
+      train_start = '1997-10-06'
+      train_end = '2017-12-25'
+      val_start = '2018-01-08'
+      val_end = '2021-12-27'
+      test_start = '2022-01-03'
+      test_end = '2024-11-18' """
+    
+    
+
+    """ if self.data.startswith('flu'):
+      train_df = df[train_start : train_end]
+      val_df = df[val_start : val_end]
+      test_df = df[test_start : test_end] """
+    
     train_df = df[:train_end]
     val_df = df[train_end - self.seq_len : val_end]
     test_df = df[val_end - self.seq_len : test_end]

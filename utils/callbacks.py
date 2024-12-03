@@ -23,8 +23,7 @@
 import logging
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, LearningRateScheduler, ModelCheckpoint
-
+from keras.callbacks import EarlyStopping, LearningRateScheduler, ModelCheckpoint
 from .model_utils import cosine_annealing
 
 
