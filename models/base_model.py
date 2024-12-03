@@ -63,9 +63,9 @@ class BaseModel(tf.keras.Model):
 
     """
 
-    def __init__(self, pred_len, num_heads=1, d_model=16, use_sam=None, 
-                 use_attention=None, use_revin=None, 
-                 trainable=None, rho=None, spec=None):
+    def __init__(self, pred_len, num_heads=1, d_model=16, use_sam=True, 
+                 use_attention=True, use_revin=True, 
+                 trainable=True, rho=None, spec=None):
         super(BaseModel, self).__init__()
         self.pred_len = pred_len
         self.num_heads = num_heads

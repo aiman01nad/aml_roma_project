@@ -136,7 +136,7 @@ dmypy.json
 cython_debug/
 
 # Specfic files and folders
-results/
+#results/
 /run_without_seed.sh
 *.npy
 
