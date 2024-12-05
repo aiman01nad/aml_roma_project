@@ -20,6 +20,17 @@ WHO_NREVSS_Clinical_Labs = WHO_NREVSS_Clinical_Labs.drop(columns=['REGION TYPE',
 WHO_NREVSS_Combined_prior_to_2015_16 = WHO_NREVSS_Combined_prior_to_2015_16.drop(columns=['REGION TYPE', 'REGION'])
 WHO_NREVSS_Public_Health_Labs = WHO_NREVSS_Public_Health_Labs.drop(columns=['REGION TYPE', 'REGION'])
 
+# ILINet: Combine the "AGE 25-49" and "AGE 50-64" groups into "AGE 25-64" across the whole time period
+age_columns = ['AGE 25-64', 'AGE 25-49', 'AGE 50-64']
+for column in age_columns:
+    ILINet[column] = pd.to_numeric(ILINet[column], errors='coerce')
+
+ILINet['AGE 25-64'] = ILINet.apply(
+    lambda row: row['AGE 25-64'] if not pd.isnull(row['AGE 25-64']) 
+    else row.get('AGE 25-49', 0) + row.get('AGE 50-64', 0),
+    axis=1
+)
+
 #Normalize columns across all 
 WHO_NREVSS_Combined_prior_to_2015_16_types = {'A': ['A (2009 H1N1)', 'A (H1)', 'A (H3)', 'A (Subtyping not Performed)', 'A (Unable to Subtype)', 'A (H5)'], 'B': ['B']}
 WHO_NREVSS_Public_Health_Labs_types = {'A': ['A (2009 H1N1)', 'A (H3)', 'A (Subtyping not Performed)', 'H3N2v', 'A (H5)'], 'B': ['B', 'BVic', 'BYam']}
