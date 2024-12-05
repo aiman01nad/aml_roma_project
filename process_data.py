@@ -30,6 +30,8 @@ ILINet['AGE 25-64'] = ILINet.apply(
     else row.get('AGE 25-49', 0) + row.get('AGE 50-64', 0),
     axis=1
 )
+ILINet = ILINet.drop(columns=['AGE 25-49', 'AGE 50-64'], errors='ignore')
+ILINet['AGE 25-64'] = ILINet['AGE 25-64'].astype(int)
 
 #Normalize columns across all 
 WHO_NREVSS_Combined_prior_to_2015_16_types = {'A': ['A (2009 H1N1)', 'A (H1)', 'A (H3)', 'A (Subtyping not Performed)', 'A (Unable to Subtype)', 'A (H5)'], 'B': ['B']}
@@ -81,7 +83,7 @@ Combined_data = pd.merge(WHO_NVRES, ILINet, on=['YEAR', 'WEEK'], how='inner')
 
 # Impute missing values
 Combined_data = Combined_data.replace('X', np.nan)
-most_frequent_columns = ['AGE 25-49', 'AGE 50-64', 'AGE 25-64', '% WEIGHTED ILI']
+most_frequent_columns = ['AGE 25-64', '% WEIGHTED ILI']
 zero_columns = ['YEAR', 'WEEK', 'TOTAL SPECIMENS', 'TOTAL A', 'TOTAL B', 'PERCENT POSITIVE', 'PERCENT A', 'PERCENT B', '% WEIGHTED ILI', '%UNWEIGHTED ILI', 'ILITOTAL', 'NUM. OF PROVIDERS', 'TOTAL PATIENTS']
 
 imputer_most_frequent = SimpleImputer(strategy='most_frequent')
