@@ -108,7 +108,7 @@ class TSFDataLoader:
       train_end = 12 * 30 * 24
       val_end = train_end + 4 * 30 * 24
       test_end = val_end + 4 * 30 * 24
-    elif self.data.startswith('flu') or self.data.startswith('ILINet_processed'):
+    elif self.data.startswith('flu'):
       train_end = 849 # 1997-2013
       val_end = 1006 # 2014-2016
       test_end = 1162 # 2017-2019
@@ -120,7 +120,7 @@ class TSFDataLoader:
       val_end = n - int(n * 0.2)
       test_end = n
       
-    train_df = df[train_start:train_end]
+    train_df = df[:train_end]
     val_df = df[train_end - self.seq_len : val_end]
     test_df = df[val_end - self.seq_len : test_end]
 
