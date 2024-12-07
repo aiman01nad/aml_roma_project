@@ -34,7 +34,7 @@ fi
 #pred_lengths=(96 192 336 720) # Extend or modify based on your experiment's needs.
 pred_lengths=(52) # Predicting one year
 # Use a default rho value. For optimal rho values per model/dataset/horizon, please refer to Appendix Table 3.
-rhos=(0.7) # For an optimal rho, please refer to Table 3 in our paper 
+rhos=(0.4) # For an optimal rho, please refer to Table 3 in our paper 
 
 # Loop over each 'pred_len'.
 for pred_len in "${pred_lengths[@]}"
@@ -81,7 +81,7 @@ do
             elif [ "$data" = "flu" ]; then
                 learning_rate=0.001
                 n_block=2
-                dropout=0.7
+                dropout=0.5
                 ff_dim=64
             else
                 echo "Unknown dataset: $data"
