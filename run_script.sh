@@ -83,6 +83,11 @@ do
                 n_block=2
                 dropout=0.5
                 ff_dim=64
+            elif [ "$data" = "flu_enhanced" ]; then
+                learning_rate=0.001
+                n_block=2
+                dropout=0.5
+                ff_dim=64
             else
                 echo "Unknown dataset: $data"
                 continue

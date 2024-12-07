@@ -55,7 +55,7 @@ def parse_args():
                         help="Whether to use SAM (Sharpness-Aware Minimization).")
 
     parser.add_argument("--data", type=str, default="weather",
-                        choices=["electricity", "exchange_rate", "weather", "ETTm1", "ETTm2", "ETTh1", "ETTh2", "traffic", "toy", "flu"],
+                        choices=["electricity", "exchange_rate", "weather", "ETTm1", "ETTm2", "ETTh1", "ETTh2", "traffic", "toy", "flu", "flu_enhanced"],
                         help="Dataset for training.")
 
     parser.add_argument("--feature_type", type=str, default="M",
