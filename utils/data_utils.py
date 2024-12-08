@@ -109,9 +109,9 @@ class TSFDataLoader:
       val_end = train_end + 4 * 30 * 24
       test_end = val_end + 4 * 30 * 24
     elif self.data.startswith('flu'):
-      train_end = 849 # 1997-2013
-      val_end = 1006 # 2014-2016
-      test_end = 1162 # 2017-2019
+      train_end = 847 # 1997-2013
+      val_end = 1005 # 2014-2016
+      test_end = 1161 # 2017-2019
       """ train_end = 1058 # 1997-2017
       val_end = 1267 # 2018-2021
       test_end = 1417 # 2022-2024 """
