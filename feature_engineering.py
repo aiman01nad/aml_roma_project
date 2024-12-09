@@ -63,10 +63,15 @@ X_train_scaled = pd.DataFrame(X_train_scaled, columns=X_train.columns)
 X_val_scaled = pd.DataFrame(X_val_scaled, columns=X_val.columns)
 X_test_scaled = pd.DataFrame(X_test_scaled, columns=X_test.columns)
 
+target_scaler = MinMaxScaler()
+y_train_scaled = target_scaler.fit_transform(y_train.values.reshape(-1, 1))
+y_val_scaled = target_scaler.transform(y_val.values.reshape(-1, 1))
+y_test_scaled = target_scaler.transform(y_test.values.reshape(-1, 1))
+
 # Add target and temporal features back to the scaled data
-X_train_scaled[target] = y_train.values
-X_val_scaled[target] = y_val.values
-X_test_scaled[target] = y_test.values
+X_train_scaled[target] = y_train_scaled
+X_val_scaled[target] = y_val_scaled
+X_test_scaled[target] = y_test_scaled
 
 X_train_scaled[temporal_features] = temporal_train[temporal_features].reset_index(drop=True)
 X_val_scaled[temporal_features] = temporal_val[temporal_features].reset_index(drop=True)
@@ -78,9 +83,34 @@ columns = ['date'] + [col for col in flu_cleaned.columns if col != 'date']
 flu_cleaned = flu_cleaned[columns]
 
 # Verify flu_final
-print(flu_cleaned.head())
-print(flu_cleaned.tail())
+#print(flu_cleaned.head())
+#print(flu_cleaned.tail())
 
 # Final clean-up and filling missing values
 flu_final = flu_cleaned.fillna(0)
 flu_final.to_csv('dataset/flu_enhanced.csv', index=False)
+
+# Plot the data
+plt.figure(figsize=(14, 7))
+plt.plot(flu_final['date'], flu_final['OT'], label='Weighted ILI')
+plt.plot(flu_final['date'], flu_final['OT_roll_mean_4'], label='4-week rolling mean')
+plt.plot(flu_final['date'], flu_final['OT_roll_mean_8'], label='8-week rolling mean')
+plt.title('Observed vs. Rolling Mean')
+plt.xlabel('Date')
+plt.ylabel('Observed mean')
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(14, 7))
+plt.plot(flu_final['date'], flu_final['TOTAL SPECIMENS'], label='Total Specimens')
+plt.plot(flu_final['date'], flu_final['TOTAL A'], label='Total A')
+plt.plot(flu_final['date'], flu_final['TOTAL B'], label='Total B')
+plt.plot(flu_final['date'], flu_final['PERCENT POSITIVE'], label='Percent Positive')
+plt.title('Total Specimens, Total A, Total B, and Percent Positive')
+plt.xlabel('Date')
+plt.ylabel('Count')
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(14, 7))
+
