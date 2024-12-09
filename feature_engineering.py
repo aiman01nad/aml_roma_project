@@ -1,7 +1,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.impute import KNNImputer, SimpleImputer
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.feature_selection import RFE
+import seaborn as sns
 
 flu_cleaned = pd.read_csv("dataset/flu.csv")
 
@@ -82,35 +86,19 @@ flu_cleaned = pd.concat([X_train_scaled, X_val_scaled, X_test_scaled], axis=0)
 columns = ['date'] + [col for col in flu_cleaned.columns if col != 'date']
 flu_cleaned = flu_cleaned[columns]
 
-# Verify flu_final
-#print(flu_cleaned.head())
-#print(flu_cleaned.tail())
+# Improve missing data handling
+zero_counts = flu_cleaned.apply(lambda row: (row == 0.0).sum(), axis=1)
+rows_to_modify = zero_counts > 3
+flu_cleaned.loc[rows_to_modify] = flu_cleaned.loc[rows_to_modify].mask(flu_cleaned.loc[rows_to_modify] == 0.0, np.nan)
 
-# Final clean-up and filling missing values
-flu_final = flu_cleaned.fillna(0)
-flu_final.to_csv('dataset/flu_enhanced.csv', index=False)
+numerical_features = flu_cleaned.select_dtypes(include=[np.number]).columns
+imputer = SimpleImputer(strategy='mean')
+#imputer = KNNImputer(n_neighbors=5)
+flu_cleaned[numerical_features] = imputer.fit_transform(flu_cleaned[numerical_features])
 
-# Plot the data
-plt.figure(figsize=(14, 7))
-plt.plot(flu_final['date'], flu_final['OT'], label='Weighted ILI')
-plt.plot(flu_final['date'], flu_final['OT_roll_mean_4'], label='4-week rolling mean')
-plt.plot(flu_final['date'], flu_final['OT_roll_mean_8'], label='8-week rolling mean')
-plt.title('Observed vs. Rolling Mean')
-plt.xlabel('Date')
-plt.ylabel('Observed mean')
-plt.legend()
-plt.show()
+print(flu_cleaned.head())
+print(flu_cleaned.tail())
 
-plt.figure(figsize=(14, 7))
-plt.plot(flu_final['date'], flu_final['TOTAL SPECIMENS'], label='Total Specimens')
-plt.plot(flu_final['date'], flu_final['TOTAL A'], label='Total A')
-plt.plot(flu_final['date'], flu_final['TOTAL B'], label='Total B')
-plt.plot(flu_final['date'], flu_final['PERCENT POSITIVE'], label='Percent Positive')
-plt.title('Total Specimens, Total A, Total B, and Percent Positive')
-plt.xlabel('Date')
-plt.ylabel('Count')
-plt.legend()
-plt.show()
-
-plt.figure(figsize=(14, 7))
+# Save the enhanced dataset
+flu_cleaned.to_csv('dataset/flu_enhanced.csv', index=False)
 
