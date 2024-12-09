@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.impute import KNNImputer, SimpleImputer
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer, KNNImputer, SimpleImputer
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import RFE
+
 import seaborn as sns
 
 flu_cleaned = pd.read_csv("dataset/flu.csv")
@@ -92,12 +94,14 @@ rows_to_modify = zero_counts > 3
 flu_cleaned.loc[rows_to_modify] = flu_cleaned.loc[rows_to_modify].mask(flu_cleaned.loc[rows_to_modify] == 0.0, np.nan)
 
 numerical_features = flu_cleaned.select_dtypes(include=[np.number]).columns
-imputer = SimpleImputer(strategy='mean')
-#imputer = KNNImputer(n_neighbors=5)
-flu_cleaned[numerical_features] = imputer.fit_transform(flu_cleaned[numerical_features])
 
-print(flu_cleaned.head())
-print(flu_cleaned.tail())
+#imputer = SimpleImputer(strategy='mean')
+#imputer = SimpleImputer(strategy='median')
+#imputer = KNNImputer(n_neighbors=5)
+imputer = IterativeImputer(random_state=42)
+
+flu_cleaned[numerical_features] = imputer.fit_transform(flu_cleaned[numerical_features])
+#flu_cleaned[numerical_features] = flu_cleaned[numerical_features].fillna(method='bfill')
 
 # Save the enhanced dataset
 flu_cleaned.to_csv('dataset/flu_enhanced.csv', index=False)
