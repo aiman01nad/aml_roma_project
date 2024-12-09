@@ -40,12 +40,13 @@ WHO_NREVSS_Public_Health_Labs_types = {'A': ['A (2009 H1N1)', 'A (H3)', 'A (Subt
 def filter_types(dataset, type_dict):
     dataset['TOTAL A'] = dataset[type_dict['A']].sum(axis=1)
     dataset['TOTAL B'] = dataset[type_dict['B']].sum(axis=1)
-    dataset['PERCENT A'] = dataset['TOTAL A']/dataset['TOTAL SPECIMENS']
-    dataset['PERCENT B'] = dataset['TOTAL B']/dataset['TOTAL SPECIMENS']
+    dataset['PERCENT A'] = (dataset['TOTAL A']/dataset['TOTAL SPECIMENS']) * 100
+    dataset['PERCENT B'] = (dataset['TOTAL B']/dataset['TOTAL SPECIMENS']) * 100
     
 filter_types(WHO_NREVSS_Combined_prior_to_2015_16, WHO_NREVSS_Combined_prior_to_2015_16_types)
 filter_types(WHO_NREVSS_Public_Health_Labs, WHO_NREVSS_Public_Health_Labs_types)
-WHO_NREVSS_Public_Health_Labs['PERCENT POSITIVE'] = WHO_NREVSS_Public_Health_Labs[['TOTAL A', 'TOTAL B']].sum(axis=1)/WHO_NREVSS_Public_Health_Labs['TOTAL SPECIMENS']
+
+WHO_NREVSS_Public_Health_Labs['PERCENT POSITIVE'] = (WHO_NREVSS_Public_Health_Labs[['TOTAL A', 'TOTAL B']].sum(axis=1)/WHO_NREVSS_Public_Health_Labs['TOTAL SPECIMENS'])*100
 WHO_NREVSS_Combined_prior_to_2015_16 = WHO_NREVSS_Combined_prior_to_2015_16[['YEAR', 'WEEK', 'TOTAL SPECIMENS', 'TOTAL A', 'TOTAL B', 'PERCENT POSITIVE', 'PERCENT A', 'PERCENT B']]
 WHO_NREVSS_Public_Health_Labs=WHO_NREVSS_Public_Health_Labs[['YEAR', 'WEEK', 'TOTAL SPECIMENS', 'TOTAL A', 'TOTAL B', 'PERCENT POSITIVE', 'PERCENT A', 'PERCENT B']]
 WHO_NREVSS_Combined_prior_to_2015_16.fillna(0, inplace=True)
@@ -64,14 +65,14 @@ WHO_NREVSS_Combined_after_2015 = (
     })
 )
 WHO_NREVSS_Combined_after_2015['PERCENT POSITIVE'] = (
-    (WHO_NREVSS_Combined_after_2015['TOTAL A'] + WHO_NREVSS_Combined_after_2015['TOTAL B']) / 
-    WHO_NREVSS_Combined_after_2015['TOTAL SPECIMENS']
+    ((WHO_NREVSS_Combined_after_2015['TOTAL A'] + WHO_NREVSS_Combined_after_2015['TOTAL B']) / 
+    WHO_NREVSS_Combined_after_2015['TOTAL SPECIMENS']) * 100
 )
 WHO_NREVSS_Combined_after_2015['PERCENT A'] = (
-    WHO_NREVSS_Combined_after_2015['TOTAL A'] / WHO_NREVSS_Combined_after_2015['TOTAL SPECIMENS']
+    (WHO_NREVSS_Combined_after_2015['TOTAL A'] / WHO_NREVSS_Combined_after_2015['TOTAL SPECIMENS']) * 100
 )
 WHO_NREVSS_Combined_after_2015['PERCENT B'] = (
-    WHO_NREVSS_Combined_after_2015['TOTAL B'] / WHO_NREVSS_Combined_after_2015['TOTAL SPECIMENS']
+    (WHO_NREVSS_Combined_after_2015['TOTAL B'] / WHO_NREVSS_Combined_after_2015['TOTAL SPECIMENS']) * 100
 )
 WHO_NREVSS_Combined_after_2015.fillna(0, inplace=True)
 #Combine WHO data
