@@ -103,6 +103,24 @@ imputer = IterativeImputer(random_state=42)
 flu_cleaned[numerical_features] = imputer.fit_transform(flu_cleaned[numerical_features])
 #flu_cleaned[numerical_features] = flu_cleaned[numerical_features].fillna(method='bfill')
 
+# Feature selection using Recursive Feature Elimination (RFE)
+temporal_features = ['date', 'month', 'week', 'year', 'quarter', 'season']
+
+X = flu_cleaned.drop(columns=temporal_features + ['OT'])  # Drop both temporal and target features
+y = flu_cleaned['OT']
+
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X, y)
+selector = RFE(estimator=model, n_features_to_select=10)
+X_train_rfe = selector.fit_transform(X, y)
+
+selected_features = X.columns[selector.support_]
+print("Selected Numerical Features:", selected_features)
+
+X_train_final = pd.concat([X[selected_features], flu_cleaned[temporal_features]], axis=1)
+print("Final Features Including Temporal:", X_train_final.columns)
+flu_cleaned = pd.concat([X_train_final, y], axis=1)
+
 # Save the enhanced dataset
 flu_cleaned.to_csv('dataset/flu_enhanced.csv', index=False)
 
