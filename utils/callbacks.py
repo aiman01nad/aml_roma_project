@@ -25,6 +25,8 @@ import numpy as np
 import tensorflow as tf
 from keras.callbacks import EarlyStopping, LearningRateScheduler, ModelCheckpoint
 from .model_utils import cosine_annealing
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class CaptureWeightsCallback(tf.keras.callbacks.Callback):
@@ -67,10 +69,20 @@ class CaptureWeightsCallback(tf.keras.callbacks.Callback):
             epoch (int): The current epoch number.
             logs (dict): Currently unused. Contains logs from the training epoch.
         """
-        if epoch % 5 == 0:  # Perform analysis every 5 epochs
-            # Retrieve attention weights from the model
+        if epoch % 5 == 0: 
             last_attention_weights = self.model.get_last_attention_weights()
             if last_attention_weights is not None:
+                attention_matrix = last_attention_weights[0][0]
+
+                plt.figure(figsize=(10, 8))
+                sns.heatmap(attention_matrix, cmap='viridis', annot=False, cbar=True)
+                plt.title(f"Attention Heatmap (Epoch {epoch})")
+                plt.xlabel("Keys")
+                plt.ylabel("Queries")
+                
+                # Show or save the figure
+                plt.savefig(f"heatmaps/attention_heatmap_epoch_{epoch}.png")
+                plt.close()
                 self.attention_weights_history.append(last_attention_weights)
     
     def get_attention_weights_history(self):
